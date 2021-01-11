@@ -9,8 +9,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Boxi.Api.MiddleWare;
+using Boxi.Dal.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Api
 {
@@ -26,11 +31,22 @@ namespace Boxi.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Boxi.Api", Version = "v1" });
+            });
+
+            //Custom extension to add repository 
+            services.AddDataAccessLayer();
+            services.AddTransient<IDbConnection>((sp) =>
+                new SqlConnection(Configuration.GetConnectionString("InventoryDatabase")));
+            services.AddDbContext<ComicInventoryContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("InventoryDatabase"), builder =>
+                {
+                    builder.CommandTimeout(30);
+                });
             });
         }
 
@@ -43,6 +59,8 @@ namespace Boxi.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Boxi.Api v1"));
             }
+
+            //app.UseConsistantApiResponses();
 
             app.UseHttpsRedirection();
 
