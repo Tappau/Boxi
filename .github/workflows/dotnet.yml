@@ -8,7 +8,7 @@ on:
 
 env:
   BuildConfig: 'Release'
-  SolutionFile: Boxi\Boxi.sln
+  SolutionFile: Boxi/Boxi.sln
 
 jobs:
   build:
