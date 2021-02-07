@@ -1,44 +1,38 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Boxi.Core.Domain;
 using Boxi.Dal.Interfaces;
 using Boxi.Dal.Models;
 
 namespace Boxi.Dal
 {
-    public class UnitOfWork : IUnitOfWork
+    public sealed class UnitOfWork : IUnitOfWork
     {
-        private readonly ComicInventoryContext _context;
+        private readonly BoxiDataContext _context;
 
-        public IBaseRepository<Grade> GradeRepo { get; set; }
-        public IBoxStoreRepository BoxRepo { get; set; }
-        public IPublisherRepository PublisherRepo { get; set; }
+        public IBaseRepository<Item> ItemRepo { get; }
+        public IBoxRepository BoxRepo { get; }
 
-        public UnitOfWork(ComicInventoryContext comicInventoryContext, IBaseRepository<Grade> gradeRepo
-        ,IPublisherRepository publisherRepository, IBoxStoreRepository boxStoreRepository)
+        public UnitOfWork(BoxiDataContext comicInventoryContext, IBoxRepository boxStoreRepository
+        , IBaseRepository<Item> itemRepository)
         {
             _context = comicInventoryContext;
-            GradeRepo = gradeRepo;
             BoxRepo = boxStoreRepository;
-            PublisherRepo = publisherRepository;
-        }
-
-        public int Save()
-        {
-            return _context.SaveChanges();
+            ItemRepo = itemRepository;
         }
 
         public async Task<int> SaveAsync()
         {
             return await _context.SaveChangesAsync();
         }
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposing)
             {

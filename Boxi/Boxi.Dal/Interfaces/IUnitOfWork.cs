@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Boxi.Dal.Models;
+using Boxi.Core.Domain;
 
 namespace Boxi.Dal.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IBaseRepository<Grade> GradeRepo { get; set; }
-        IBoxStoreRepository BoxRepo { get; set; }
-        IPublisherRepository PublisherRepo { get; set; }
-        int Save();
+        IBaseRepository<Item> ItemRepo { get; }
+        IBoxRepository BoxRepo { get; }
         Task<int> SaveAsync();
     }
 }

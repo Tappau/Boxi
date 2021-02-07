@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -12,14 +11,14 @@ namespace Boxi.Dal.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected readonly ComicInventoryContext Context;
-        
-        public BaseRepository(ComicInventoryContext context)
+        protected readonly BoxiDataContext Context;
+
+        public BaseRepository(BoxiDataContext context)
         {
             Context = context;
         }
 
-        public virtual T Get(int id)
+        private T Get(int id)
         {
             return Context.Set<T>().Find(id);
         }
@@ -29,29 +28,14 @@ namespace Boxi.Dal.Repositories
             return await Context.Set<T>().FindAsync(id);
         }
 
-        public virtual IEnumerable<T> GetAll()
-        {
-            return Context.Set<T>().ToList();
-        }
-
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await Context.Set<T>().ToListAsync();
         }
 
-        public virtual void Add(T entity)
-        {
-            Context.Set<T>().Add(entity);
-        }
-
         public virtual async Task AddAsync(T entity)
         {
             await Context.Set<T>().AddAsync(entity);
-        }
-
-        public virtual void AddRange(IEnumerable<T> entities)
-        {
-            Context.Set<T>().AddRange(entities);
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<T> entities)
@@ -84,20 +68,10 @@ namespace Boxi.Dal.Repositories
         {
             Context.Set<T>().RemoveRange(entities);
         }
-
-        public virtual T Fetch(Expression<Func<T, bool>> predicate)
-        {
-            return Context.Set<T>().FirstOrDefault(predicate);
-        }
-
+        
         public virtual async Task<T> FetchAsync(Expression<Func<T, bool>> predicate)
         {
             return await Context.Set<T>().FirstOrDefaultAsync(predicate);
-        }
-
-        public virtual IEnumerable<T> FetchAll(Expression<Func<T, bool>> predicate)
-        {
-            return Context.Set<T>().Where(predicate);
         }
 
         public virtual async Task<IEnumerable<T>> FetchAllAsync(Expression<Func<T, bool>> predicate)
@@ -105,19 +79,9 @@ namespace Boxi.Dal.Repositories
             return await Context.Set<T>().Where(predicate).ToListAsync();
         }
 
-        public virtual bool Exist(Expression<Func<T, bool>> predicate)
-        {
-            return Context.Set<T>().Any(predicate);
-        }
-
         public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
             return await Context.Set<T>().AnyAsync(predicate);
-        }
-
-        public virtual int TotalCount()
-        {
-            return Context.Set<T>().Count();
         }
 
         public virtual async Task<int> TotalCountAsync()

@@ -1,20 +1,13 @@
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using Boxi.Api.MiddleWare;
 using Boxi.Dal.Models;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Api
@@ -36,18 +29,22 @@ namespace Boxi.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Boxi.Api", Version = "v1" });
             });
-
-            //Custom extension to add repository 
-            services.AddDataAccessLayer();
-            services.AddTransient<IDbConnection>((sp) =>
-                new SqlConnection(Configuration.GetConnectionString("InventoryDatabase")));
-            services.AddDbContext<ComicInventoryContext>(options =>
+            
+            services.AddDbContext<BoxiDataContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("InventoryDatabase"), builder =>
+                var sqlDbName = Configuration.GetConnectionString("SqliteDatabase").Split("=")[0];
+                var test = $"Data Source={new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName}\\{sqlDbName}";
+                options.UseSqlite(Configuration.GetConnectionString("SqliteDatabase"), builder =>
                 {
                     builder.CommandTimeout(30);
                 });
             });
+
+            //Custom extension to add repositories
+            services.AddDataAccessLayer();
+            //This is here to set up a IDbConnection for Dapper usage to be injected
+            //services.AddTransient<IDbConnection>((sp) =>
+            //    new SqlConnection(Configuration.GetConnectionString("InventoryDatabase")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +55,15 @@ namespace Boxi.Api
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Boxi.Api v1"));
+            }
+
+            using (var services = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = services.ServiceProvider.GetRequiredService<BoxiDataContext>();
+                if (context != null)
+                {
+                    context.Database.EnsureCreated();
+                }
             }
 
             //app.UseConsistantApiResponses();
