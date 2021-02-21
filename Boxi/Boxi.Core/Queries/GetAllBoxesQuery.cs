@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Boxi.Core.Queries
 {
-    public class GetAllBoxesQuery : IRequest<List<BoxDto>>
+    public record GetAllBoxesQuery : IRequest<List<BoxDto>>
     {
         
     }

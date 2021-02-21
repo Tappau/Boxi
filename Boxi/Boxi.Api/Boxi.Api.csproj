@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Boxi.Common\Boxi.Common.csproj" />
     <ProjectReference Include="..\Boxi.Dal\Boxi.Dal.csproj" />
+    <ProjectReference Include="..\Boxi.Service\Boxi.Service.csproj" />
   </ItemGroup>
 
 </Project>

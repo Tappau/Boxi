@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Mime;
 using System.Reflection;
 using Boxi.Api.MiddleWare;
-using Boxi.Common.Handlers.CommandHandlers;
 using Boxi.Core.Commands;
 using Boxi.Core.Domain;
-using Boxi.Core.Queries;
 using Boxi.Dal.Models;
+using Boxi.Service.Handlers.CommandHandlers;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,6 +19,8 @@ namespace Boxi.Api
 {
     public class Startup
     {
+        private bool _isDevEnvironment;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -56,38 +56,45 @@ namespace Boxi.Api
         {
             if (env.IsDevelopment())
             {
+                _isDevEnvironment = true;
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Boxi.Api v1"));
             }
 
-            using (var services = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            using (var services = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope())
             {
-                var context = services.ServiceProvider.GetRequiredService<BoxiDataContext>();
-                context?.Database.EnsureDeleted();
+                var context = services?.ServiceProvider.GetRequiredService<BoxiDataContext>();
+                if (_isDevEnvironment)
+                {
+                    context?.Database.EnsureDeleted();
+                }
+
                 context?.Database.EnsureCreated();
 
-                var boxes = new List<Box>
+                if (_isDevEnvironment)
                 {
-                    new ("DC Comic Box 1", "Contains DC Comics")
+                    var boxes = new List<Box>
                     {
-                        Items = new List<Item>
+                        new("DC Comic Box 1", "Contains DC Comics")
                         {
-                            new("Detective Comics #1"), 
-                            new ("Wonder Woman #286")
+                            Items = new List<Item>
+                            {
+                                new("Detective Comics #1"), new("Wonder Woman #286")
+                            }
                         }
-                    }, 
-                    new ("Marvel Comic Box 1", "Contains Marvel Comics", "QR DATA")
-                    {
-                        Items = new List<Item>
+                      , new("Marvel Comic Box 1", "Contains Marvel Comics", "QR DATA")
                         {
-                            new ("X-Men #188")
+                            Items = new List<Item>
+                            {
+                                new("X-Men #188")
+                            }
                         }
-                    }
-                };
+                    };
 
-                context?.Box.AddRangeAsync(boxes);
-                context?.SaveChangesAsync();
+                    context?.Box.AddRangeAsync(boxes);
+                    context?.SaveChangesAsync();
+                }
             }
 
             app.UseConsistantApiResponses();

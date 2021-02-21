@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Boxi.Core.DTOs;
 using Boxi.Core.Queries;
 using Boxi.Dal.Interfaces;
 using MediatR;
 
-namespace Boxi.Common.Handlers.QueryHandlers
+namespace Boxi.Service.Handlers.QueryHandlers
 {
     public class GetBoxByIdQueryHandler : IRequestHandler<GetBoxByIdQuery, BoxDto>
     {

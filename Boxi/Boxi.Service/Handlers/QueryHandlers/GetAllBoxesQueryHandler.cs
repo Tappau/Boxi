@@ -7,7 +7,7 @@ using Boxi.Core.Queries;
 using Boxi.Dal.Interfaces;
 using MediatR;
 
-namespace Boxi.Common.Handlers.QueryHandlers
+namespace Boxi.Service.Handlers.QueryHandlers
 {
     public class GetAllBoxesQueryHandler : IRequestHandler<GetAllBoxesQuery, List<BoxDto>>
     {

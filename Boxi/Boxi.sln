@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Core", "Boxi.Core\Boxi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Tests", "Boxi.Tests\Boxi.Tests.csproj", "{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxi.Common", "Boxi.Common\Boxi.Common.csproj", "{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Service", "Boxi.Service\Boxi.Service.csproj", "{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

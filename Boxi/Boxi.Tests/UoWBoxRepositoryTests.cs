@@ -41,6 +41,13 @@ namespace Boxi.Tests
             Assert.Equal(4, await _fixture.UoW.BoxRepo.FetchNextBoxIdAsync());
         }
 
+        [Fact]
+        public async Task FetchAllAsync_Predicate_Returns_Boxes_WithItemsContainingBarCode()
+        {
+            var t = await _fixture.UoW.BoxRepo.FetchAllAsync(x => x.Items.Any(i => i.Barcode == "BARCODE"));
+            Assert.Equal(2, t.Count());
+        }
+
         [Theory]
         [InlineData(1)]
         [InlineData(2)]

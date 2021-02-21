@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Boxi.Core;
 using Boxi.Core.Commands;
-using Boxi.Core.DTOs;
 using Boxi.Core.Queries;
-using Boxi.Dal.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,30 +11,23 @@ namespace Boxi.Api.Controllers
     [ApiController]
     public class BoxController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         private readonly IMediator _mediator;
-
-        // GET: api/<BoxController>
-        public BoxController(IUnitOfWork unitOfWork, IMediator mediator)
+        
+        public BoxController(IMediator mediator)
         {
-            _unitOfWork = unitOfWork;
             _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            //var boxes = await _unitOfWork.BoxRepo.GetAllAsync();
             var boxes = await _mediator.Send(new GetAllBoxesQuery());
             return Ok(boxes);
         }
 
-        // GET api/<BoxController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            //var box = await _unitOfWork.BoxRepo.GetAsync(id);
             var box = await _mediator.Send(new GetBoxByIdQuery{Id = id});
             if (box == null)
             {
@@ -46,10 +36,9 @@ namespace Boxi.Api.Controllers
 
             return Ok(box);
         }
-
-        // POST api/<BoxController>
+        
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateBoxCommand newBoxCommand)
+        public async Task<IActionResult> Post(CreateBoxCommand newBoxCommand)
         {
             if (newBoxCommand == null)
             {
@@ -61,9 +50,8 @@ namespace Boxi.Api.Controllers
             return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
         }
 
-        // PUT api/<BoxController>
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateBoxCommand updateBoxCommand)
+        public async Task<IActionResult> Put(UpdateBoxCommand updateBoxCommand)
         {
             if (updateBoxCommand == null)
             {
@@ -77,15 +65,27 @@ namespace Boxi.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
             }
             return Ok();
         }
 
-        // DELETE api/<BoxController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(DeleteBoxCommand deleteBoxCommand)
         {
+            return await Delete(deleteBoxCommand.Id);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            await _mediator.Send(new DeleteBoxCommand(id));
+            return NoContent();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using Boxi.Core.Domain;
 using Boxi.Dal;
 using Boxi.Dal.Interfaces;
@@ -36,6 +37,9 @@ namespace Boxi.Tests.TestHelpers
                     new Item($"Box {i}, Item {i + 1}")                        
                 }});
             }
+
+            boxData.Last().Items.Add(new Item("Item has barcode", "BARCODE"));
+            boxData.First().Items.Add(new Item("Item has barcode", "BARCODE"));
 
             return boxData;
         }

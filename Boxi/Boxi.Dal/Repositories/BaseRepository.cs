@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Boxi.Core.Domain;
 using Boxi.Dal.Interfaces;
 using Boxi.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Dal.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         protected readonly BoxiDataContext Context;
 
@@ -33,19 +34,9 @@ namespace Boxi.Dal.Repositories
             await Context.Set<T>().AddAsync(entity);
         }
 
-        public virtual async Task AddRangeAsync(IEnumerable<T> entities)
-        {
-            await Context.Set<T>().AddRangeAsync(entities);
-        }
-
         public virtual void Update(T updatedEntity)
         {
             Context.Set<T>().Update(updatedEntity);
-        }
-
-        public virtual void UpdateRange(IEnumerable<T> entities)
-        {
-            Context.Set<T>().UpdateRange(entities);
         }
 
         public virtual void Delete(T entity)
@@ -55,13 +46,14 @@ namespace Boxi.Dal.Repositories
 
         public virtual void Delete(int id)
         {
-            var itemtoRemove = Get(id);
-            Context.Set<T>().Remove(itemtoRemove);
+            var itemtoRemove = Get(x => x.Id == id);
+            Delete(itemtoRemove);
         }
 
-        public virtual void DeleteRange(IEnumerable<T> entities)
+        public void Delete(Expression<Func<T, bool>> predicate)
         {
-            Context.Set<T>().RemoveRange(entities);
+            var entityToDelete = Get(predicate);
+            Delete(entityToDelete);
         }
 
         public virtual async Task<T> FetchAsync(Expression<Func<T, bool>> predicate)
@@ -74,36 +66,14 @@ namespace Boxi.Dal.Repositories
             return await Context.Set<T>().Where(predicate).ToListAsync();
         }
 
-        public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await Context.Set<T>().AnyAsync(predicate);
-        }
-
         public virtual async Task<int> TotalCountAsync()
         {
             return await Context.Set<T>().CountAsync();
         }
 
-        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
-        public void Dispose()
+        private T Get(Expression<Func<T, bool>> predicate)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private T Get(int id)
-        {
-            return Context.Set<T>().Find(id);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
-
-            Context.Dispose();
+            return (T) Context.Set<T>().FirstOrDefault(predicate);
         }
     }
 }

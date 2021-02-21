@@ -5,16 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Boxi.Core\Boxi.Core.csproj" />
     <ProjectReference Include="..\Boxi.Dal\Boxi.Dal.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Handlers\CommandHandlers\" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

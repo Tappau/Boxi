@@ -6,7 +6,7 @@ using Boxi.Core.DTOs;
 using Boxi.Dal.Interfaces;
 using MediatR;
 
-namespace Boxi.Common.Handlers.CommandHandlers
+namespace Boxi.Service.Handlers.CommandHandlers
 {
     public class UpdateBoxCommandHandler : IRequestHandler<UpdateBoxCommand, BoxDto>
     {
