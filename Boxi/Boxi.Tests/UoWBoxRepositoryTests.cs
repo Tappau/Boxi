@@ -68,13 +68,16 @@ namespace Boxi.Tests
             Assert.Equal("notes", box.Notes);
         }
 
-        [Fact]
-        public async Task AddAsync_Box_Fetch_BySpecificBoxName()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task AddAsync_Box_Fetch_BySpecificBoxName(int boxId)
         {
-            var box = await _unitOfWork.BoxRepo.FetchAsync(x => x.BoxName.Equals("Box 1"));
+            var box = await _unitOfWork.BoxRepo.FetchAsync(x => x.BoxName.Equals($"Box {boxId}"));
             Assert.NotNull(box);
-            Assert.Equal("Box 1", box.BoxName);
-            Assert.Equal("Notes for Box 1", box.Notes);
+            Assert.Equal($"Box {boxId}", box.BoxName);
+            Assert.Equal($"Notes for Box {boxId}", box.Notes);
         }
     }
 }
