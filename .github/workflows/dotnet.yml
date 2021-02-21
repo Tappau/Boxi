@@ -26,4 +26,4 @@ jobs:
     - name: Build
       run: dotnet build ${{ env.SolutionFile }} --no-restore --configuration ${{ env.BuildConfig }}
     - name: Test
-      run: dotnet test ${{ env.SolutionFile }} --no-build --verbosity normal
+      run: dotnet test ${{ env.SolutionFile }} --no-build --configuration ${{ env.BuildConfig }} --verbosity normal 
