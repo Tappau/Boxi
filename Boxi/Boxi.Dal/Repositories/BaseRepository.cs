@@ -18,11 +18,6 @@ namespace Boxi.Dal.Repositories
             Context = context;
         }
 
-        private T Get(int id)
-        {
-            return Context.Set<T>().Find(id);
-        }
-
         public virtual async Task<T> GetAsync(int id)
         {
             return await Context.Set<T>().FindAsync(id);
@@ -68,7 +63,7 @@ namespace Boxi.Dal.Repositories
         {
             Context.Set<T>().RemoveRange(entities);
         }
-        
+
         public virtual async Task<T> FetchAsync(Expression<Func<T, bool>> predicate)
         {
             return await Context.Set<T>().FirstOrDefaultAsync(predicate);
@@ -94,6 +89,11 @@ namespace Boxi.Dal.Repositories
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private T Get(int id)
+        {
+            return Context.Set<T>().Find(id);
         }
 
         protected virtual void Dispose(bool disposing)

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Boxi.Dal.Interfaces
 {
-    public interface IBaseRepository<T> : IDisposable where T : class
+    public interface IBaseRepository<T> where T : class
     {
         Task<T> GetAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
@@ -19,7 +19,7 @@ namespace Boxi.Dal.Interfaces
 
         Task<T> FetchAsync(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> FetchAllAsync(Expression<Func<T, bool>> predicate);
-        
+
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
 
         Task<int> TotalCountAsync();

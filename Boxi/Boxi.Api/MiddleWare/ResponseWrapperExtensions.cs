@@ -38,7 +38,7 @@ namespace Boxi.Api.MiddleWare
                 context.Response.Body = memoryStream;
 
                 await _nextRequestDelegate(context);
-                
+
                 //reset the body
                 context.Response.Body = currentBody;
                 memoryStream.Seek(0, SeekOrigin.Begin);
@@ -46,17 +46,15 @@ namespace Boxi.Api.MiddleWare
                 var readToEnd = new StreamReader(memoryStream).ReadToEnd();
                 var objResult = JsonConvert.DeserializeObject(readToEnd);
                 var result =
-                    ConsistantApiResponse.Create((HttpStatusCode) context.Response.StatusCode, objResult, null);
+                    ConsistantApiResponse.Create((HttpStatusCode) context.Response.StatusCode, objResult);
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
-
-
             }
         }
     }
 
     public class ConsistantApiResponse
     {
-        protected ConsistantApiResponse(HttpStatusCode responseStatusCode, object objResult, string errorMessage)
+        private ConsistantApiResponse(HttpStatusCode responseStatusCode, object objResult, string errorMessage)
         {
             RequestId = Guid.NewGuid().ToString();
             StatusCode = (int) responseStatusCode;
@@ -72,7 +70,8 @@ namespace Boxi.Api.MiddleWare
 
         public string RequestId { get; }
 
-        public static object Create(HttpStatusCode responseStatusCode, object objResult = null, string errorMessage = null)
+        public static object Create(HttpStatusCode responseStatusCode, object objResult = null,
+            string errorMessage = null)
         {
             return new ConsistantApiResponse(responseStatusCode, objResult, errorMessage);
         }

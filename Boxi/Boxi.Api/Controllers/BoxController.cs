@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Boxi.Core;
 using Boxi.Core.Commands;
 using Boxi.Dal.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Boxi.Api.Controllers
 {
@@ -45,7 +45,7 @@ namespace Boxi.Api.Controllers
             }
 
             //Only needing the ToEntity method tempary until CQRS Mediatr implementation
-            await UnitOfWork.BoxRepo.AddAsync(createBoxCommand.ToEntity());
+            //await UnitOfWork.BoxRepo.AddAsync(createBoxCommand.ToEntity());
             await UnitOfWork.SaveAsync();
             //This will be better as will return the route to the resource in the return message,
             //but not yet as currently Add in repos don't return the new object.

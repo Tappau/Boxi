@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Boxi.Dal.Interfaces;
+﻿using Boxi.Dal.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Boxi.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-
         public BaseController(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork;
         }
 
-        public IUnitOfWork UnitOfWork => _unitOfWork;
+        public IUnitOfWork UnitOfWork { get; }
     }
 }

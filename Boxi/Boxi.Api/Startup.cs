@@ -1,14 +1,16 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Boxi.Api.MiddleWare;
+using Boxi.Core.Domain;
+using Boxi.Dal.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Boxi.Api.MiddleWare;
-using Boxi.Dal.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Api
 {
@@ -25,19 +27,14 @@ namespace Boxi.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Boxi.Api", Version = "v1" });
-            });
-            
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Boxi.Api", Version = "v1"}); });
+
             services.AddDbContext<BoxiDataContext>(options =>
             {
-                var sqlDbName = Configuration.GetConnectionString("SqliteDatabase").Split("=")[0];
-                var test = $"Data Source={new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.FullName}\\{sqlDbName}";
-                options.UseSqlite(Configuration.GetConnectionString("SqliteDatabase"), builder =>
-                {
-                    builder.CommandTimeout(30);
-                });
+                var sqlDbName = Configuration.GetConnectionString("SqliteDatabase").Split("=")[1];
+                var connectionString =
+                    $"Data Source={new FileInfo(Assembly.GetExecutingAssembly().Location).Directory?.FullName}\\{sqlDbName}";
+                options.UseSqlite(connectionString, builder => { builder.CommandTimeout(30); });
             });
 
             //Custom extension to add repositories
@@ -60,10 +57,29 @@ namespace Boxi.Api
             using (var services = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = services.ServiceProvider.GetRequiredService<BoxiDataContext>();
-                if (context != null)
+                context?.Database.EnsureCreated();
+
+                var boxes = new List<Box>
                 {
-                    context.Database.EnsureCreated();
-                }
+                    new ("DC Comic Box 1", "Contains DC Comics")
+                    {
+                        Items = new List<Item>
+                        {
+                            new("Detective Comics #1"), 
+                            new ("Wonder Woman #286")
+                        }
+                    }, 
+                    new ("Marvel Comic Box 1", "Contains Marvel Comics", "QR DATA")
+                    {
+                        Items = new List<Item>
+                        {
+                            new ("X-Men #188")
+                        }
+                    }
+                };
+
+                context?.Box.AddRangeAsync(boxes);
+                context?.SaveChangesAsync();
             }
 
             //app.UseConsistantApiResponses();
@@ -74,10 +90,7 @@ namespace Boxi.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

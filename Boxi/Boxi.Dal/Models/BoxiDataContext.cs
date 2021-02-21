@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Dal.Models
 {
-    public partial class BoxiDataContext : DbContext
+    public partial class BoxiDataContext : DbContext, IBoxiDataContext
     {
         public BoxiDataContext()
         {
@@ -23,8 +24,8 @@ namespace Boxi.Dal.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BoxiDataContext).Assembly);
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BoxiDataContext).Assembly);
 
             //foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             //{
@@ -35,7 +36,7 @@ namespace Boxi.Dal.Models
 
             OnModelCreatingPartial(modelBuilder);
         }
-
+        
         public override int SaveChanges()
         {
             SetCreatedModifiedOnValues();
@@ -52,18 +53,18 @@ namespace Boxi.Dal.Models
         private void SetCreatedModifiedOnValues()
         {
             var entries = ChangeTracker.Entries()
-                            .Where(e => e.Entity is BaseEntity && (
-                                e.State == EntityState.Added || e.State == EntityState.Modified));
+                .Where(e => e.Entity is BaseEntity && (
+                    e.State == EntityState.Added || e.State == EntityState.Modified));
             foreach (var entityEntry in entries)
             {
                 switch (entityEntry.State)
                 {
                     case EntityState.Added:
-                        ((BaseEntity)entityEntry.Entity).CreatedOn = DateTime.UtcNow;
-                        ((BaseEntity)entityEntry.Entity).ModifiedOn = null;
+                        ((BaseEntity) entityEntry.Entity).CreatedOn = DateTime.UtcNow;
+                        ((BaseEntity) entityEntry.Entity).ModifiedOn = null;
                         break;
                     case EntityState.Modified:
-                        ((BaseEntity)entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
+                        ((BaseEntity) entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
                         break;
                 }
             }
