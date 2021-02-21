@@ -5,7 +5,7 @@ using Boxi.Dal.Models;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace Boxi.Tests
+namespace Boxi.Tests.TestHelpers
 {
     public abstract class DataContextTestBase
     {

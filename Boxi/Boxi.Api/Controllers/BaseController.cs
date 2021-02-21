@@ -5,11 +5,9 @@ namespace Boxi.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
-        public BaseController(IUnitOfWork unitOfWork)
+        public BaseController()
         {
-            UnitOfWork = unitOfWork;
+            
         }
-
-        public IUnitOfWork UnitOfWork { get; }
     }
 }

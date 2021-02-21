@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Boxi.Core;
 using Boxi.Core.Commands;
+using Boxi.Core.DTOs;
+using Boxi.Core.Queries;
 using Boxi.Dal.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Boxi.Api.Controllers
@@ -10,23 +14,31 @@ namespace Boxi.Api.Controllers
     [ApiController]
     public class BoxController : BaseController
     {
+        private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IMediator _mediator;
+
         // GET: api/<BoxController>
-        public BoxController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public BoxController(IUnitOfWork unitOfWork, IMediator mediator)
         {
+            _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var boxes = await UnitOfWork.BoxRepo.GetAllAsync();
+            //var boxes = await _unitOfWork.BoxRepo.GetAllAsync();
+            var boxes = await _mediator.Send(new GetAllBoxesQuery());
             return Ok(boxes);
         }
 
         // GET api/<BoxController>/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var box = await UnitOfWork.BoxRepo.GetAsync(id);
+            //var box = await _unitOfWork.BoxRepo.GetAsync(id);
+            var box = await _mediator.Send(new GetBoxByIdQuery{Id = id});
             if (box == null)
             {
                 return NotFound();
@@ -37,20 +49,16 @@ namespace Boxi.Api.Controllers
 
         // POST api/<BoxController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateBoxCommand createBoxCommand)
+        public async Task<IActionResult> Post([FromBody] CreateBoxCommand newBoxCommand)
         {
-            if (createBoxCommand == null)
+            if (newBoxCommand == null)
             {
                 return BadRequest();
             }
 
-            //Only needing the ToEntity method tempary until CQRS Mediatr implementation
-            //await UnitOfWork.BoxRepo.AddAsync(createBoxCommand.ToEntity());
-            await UnitOfWork.SaveAsync();
-            //This will be better as will return the route to the resource in the return message,
-            //but not yet as currently Add in repos don't return the new object.
-            //return CreatedAtAction(nameof(Get), new {id = newBox.Id}, newBox);
-            return Created("Get", createBoxCommand);
+            var result = await _mediator.Send(newBoxCommand);
+            
+            return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
         }
 
         // PUT api/<BoxController>
@@ -62,20 +70,15 @@ namespace Boxi.Api.Controllers
                 return BadRequest();
             }
 
-            var currentBox = await UnitOfWork.BoxRepo.GetAsync(updateBoxCommand.Id);
-            if (currentBox != null)
+            try
             {
-                currentBox.BoxName = updateBoxCommand.Name;
-                currentBox.Notes = updateBoxCommand.Notes;
-
-                UnitOfWork.BoxRepo.Update(currentBox);
-                await UnitOfWork.SaveAsync();
+                var t = await _mediator.Send(updateBoxCommand);
+                return Ok(t);
             }
-            else
+            catch (Exception e)
             {
-                return NotFound();
+                Console.WriteLine(e);
             }
-
             return Ok();
         }
 

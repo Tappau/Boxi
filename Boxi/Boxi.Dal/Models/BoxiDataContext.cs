@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Boxi.Dal.Models
 {
-    public partial class BoxiDataContext : DbContext, IBoxiDataContext
+    public partial class BoxiDataContext : DbContext
     {
         public BoxiDataContext()
         {

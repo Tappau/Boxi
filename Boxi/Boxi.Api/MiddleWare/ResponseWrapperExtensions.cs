@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -62,12 +63,16 @@ namespace Boxi.Api.MiddleWare
             Result = objResult;
         }
 
+        [JsonPropertyName("result")]
         public object Result { get; set; }
 
+        [JsonPropertyName("errormessage")]
         public string ErrorMessage { get; set; }
 
+        [JsonPropertyName("statuscode")]
         public int StatusCode { get; set; }
 
+        [JsonPropertyName("requestid")]
         public string RequestId { get; }
 
         public static object Create(HttpStatusCode responseStatusCode, object objResult = null,

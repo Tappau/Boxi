@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Dal", "Boxi.Dal\Boxi.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Core", "Boxi.Core\Boxi.Core.csproj", "{E80C9466-01E7-4619-A0DC-CBC65115DD2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxi.Tests", "Boxi.Tests\Boxi.Tests.csproj", "{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boxi.Tests", "Boxi.Tests\Boxi.Tests.csproj", "{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boxi.Common", "Boxi.Common\Boxi.Common.csproj", "{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF7C9BA0-E495-4648-A9A6-16E3CBCEDFBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2F726D4-6BF5-4A27-91C3-1808C8CDAA0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

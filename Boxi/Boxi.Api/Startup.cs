@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Mime;
 using System.Reflection;
 using Boxi.Api.MiddleWare;
+using Boxi.Common.Handlers.CommandHandlers;
+using Boxi.Core.Commands;
 using Boxi.Core.Domain;
+using Boxi.Core.Queries;
 using Boxi.Dal.Models;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +47,8 @@ namespace Boxi.Api
             //This is here to set up a IDbConnection for Dapper usage to be injected
             //services.AddTransient<IDbConnection>((sp) =>
             //    new SqlConnection(Configuration.GetConnectionString("InventoryDatabase")));
+
+            services.AddMediatR(typeof(CreateBoxCommand), typeof(CreateBoxCommandHandler));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +64,7 @@ namespace Boxi.Api
             using (var services = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = services.ServiceProvider.GetRequiredService<BoxiDataContext>();
+                context?.Database.EnsureDeleted();
                 context?.Database.EnsureCreated();
 
                 var boxes = new List<Box>
@@ -82,7 +90,7 @@ namespace Boxi.Api
                 context?.SaveChangesAsync();
             }
 
-            //app.UseConsistantApiResponses();
+            app.UseConsistantApiResponses();
 
             app.UseHttpsRedirection();
 

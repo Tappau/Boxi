@@ -9,7 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
+    <ProjectReference Include="..\Boxi.Core\Boxi.Core.csproj" />
+    <ProjectReference Include="..\Boxi.Dal\Boxi.Dal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Handlers\CommandHandlers\" />
   </ItemGroup>
 
 </Project>

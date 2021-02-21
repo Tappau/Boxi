@@ -17,6 +17,10 @@ namespace Boxi.Core.Domain
             QrData = qrData;
         }
 
+        public Box()
+        {
+        }
+
         public string BoxName { get; set; }
         public string QrData { get; set; }
         public string Notes { get; set; }

@@ -1,36 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Boxi.Core.Domain;
-using Boxi.Dal;
-using Boxi.Dal.Interfaces;
-using Boxi.Dal.Models;
+using Boxi.Tests.TestHelpers;
+using Boxi.Tests.xUnitExtensions;
 using Xunit;
 
 namespace Boxi.Tests
 {
-    public class UoWBoxRepositoryTests : SqliteInMemoryDataContext
+    [CollectionDefinition("Non-Parallel Collection", DisableParallelization = true)]
+    [TestCaseOrderer("Boxi.Tests.xUnitExtensions.PriorityOrderer", "Boxi.Tests")]
+    public class UoWBoxRepositoryTests : IClassFixture<SqliteInMemoryDataContextFixture>
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public UoWBoxRepositoryTests()
-        {
-            _unitOfWork = new UnitOfWork(new BoxiDataContext(ContextOptions));
-        }
+        private readonly SqliteInMemoryDataContextFixture _fixture;
 
-        protected override List<Box> DefineBoxes()
+        public UoWBoxRepositoryTests(SqliteInMemoryDataContextFixture fixture)
         {
-            var boxData = new List<Box>();
-            for (var i = 1; i <= 3; i++) 
-            {
-                boxData.Add(new Box($"Box {i}", $"Notes for Box {i}")
-                {Items = new List<Item>()
-                {
-                    new Item($"Box {i}, Item {i}"),
-                    new Item($"Box {i}, Item {i + 1}")                        
-                }});
-            }
-
-            return boxData;
+            _fixture = fixture;
         }
 
         [Theory]
@@ -39,33 +24,21 @@ namespace Boxi.Tests
         [InlineData(3)]
         public async Task GetById_ShouldReturnFirstBox(int boxId)
         {
-            var i = await _unitOfWork.BoxRepo.GetAsync(boxId);
+            var i = await _fixture.UoW.BoxRepo.GetAsync(boxId);
             Assert.Equal(boxId, i.Id);
         }
 
         [Fact]
         public async Task GetAllAsync_Returns_3Items()
         {
-            var results = await _unitOfWork.BoxRepo.GetAllAsync();
+            var results = await _fixture.UoW.BoxRepo.GetAllAsync();
             Assert.Equal(3, results.Count());
         }
 
         [Fact]
         public async Task FetchNextBoxId_Returns_NewestIdPlusOne()
         {
-            Assert.Equal(4, await _unitOfWork.BoxRepo.FetchNextBoxIdAsync());
-        }
-
-        [Fact]
-        public async Task AddAsync_Box_SuccesfulCreationOf_1Box()
-        {
-            await _unitOfWork.BoxRepo.AddAsync(new Box(nameof(AddAsync_Box_SuccesfulCreationOf_1Box), "notes"));
-            var added = await _unitOfWork.SaveAsync();
-            Assert.Equal(1, added);
-
-            var box = await _unitOfWork.BoxRepo.FetchAsync(b => b.BoxName == nameof(AddAsync_Box_SuccesfulCreationOf_1Box));
-            Assert.NotNull(box);
-            Assert.Equal("notes", box.Notes);
+            Assert.Equal(4, await _fixture.UoW.BoxRepo.FetchNextBoxIdAsync());
         }
 
         [Theory]
@@ -74,10 +47,42 @@ namespace Boxi.Tests
         [InlineData(3)]
         public async Task AddAsync_Box_Fetch_BySpecificBoxName(int boxId)
         {
-            var box = await _unitOfWork.BoxRepo.FetchAsync(x => x.BoxName.Equals($"Box {boxId}"));
+            var box = await _fixture.UoW.BoxRepo.FetchAsync(x => x.BoxName.Equals($"Box {boxId}"));
             Assert.NotNull(box);
             Assert.Equal($"Box {boxId}", box.BoxName);
             Assert.Equal($"Notes for Box {boxId}", box.Notes);
+        }
+
+        [Fact, Priority(1)]
+        public async Task AddAsync_Box_SuccesfulCreationOf_1Box()
+        {
+            await _fixture.UoW.BoxRepo.AddAsync(new Box(nameof(AddAsync_Box_SuccesfulCreationOf_1Box), "notes"));
+            var added = await _fixture.UoW.SaveAsync();
+            Assert.Equal(1, added);
+        }
+
+        [Theory, Priority(2)]
+        [InlineData(nameof(AddAsync_Box_SuccesfulCreationOf_1Box))]
+        public async Task FetchAsync_Returns_RecentlyCreatedBox(string boxName)
+        {
+            var box = await _fixture.UoW.BoxRepo.FetchAsync(b => b.BoxName == boxName);
+            Assert.NotNull(box);
+            Assert.Equal(boxName, box.BoxName);
+            Assert.Equal("notes", box.Notes);
+        }
+
+        [Fact, Priority(3)]
+        public async Task Delete_Given_BoxId_CreatedInPriority1_ThenCountShouldBe_3()
+        {
+            _fixture.UoW.BoxRepo.Delete(4);
+            await _fixture.UoW.SaveAsync();
+            Assert.Equal(3, await _fixture.UoW.BoxRepo.TotalCountAsync());
+        }
+
+        [Fact, Priority(4)]
+        public async Task TotalCountAsync_Returns_3()
+        {
+            Assert.Equal(3, await _fixture.UoW.BoxRepo.TotalCountAsync());
         }
     }
 }
