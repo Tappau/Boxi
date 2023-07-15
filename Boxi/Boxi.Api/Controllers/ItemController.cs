@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Boxi.Core.Commands;
 using Boxi.Core.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Boxi.Api.Controllers
 {

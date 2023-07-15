@@ -67,6 +67,7 @@ namespace Boxi.Api.Controllers
             {
                 Console.WriteLine(e.Message);
             }
+
             return Ok();
         }
 
