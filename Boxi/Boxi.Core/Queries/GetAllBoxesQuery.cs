@@ -6,6 +6,6 @@ namespace Boxi.Core.Queries
 {
     public record GetAllBoxesQuery : IRequest<List<BoxDto>>
     {
-        
+
     }
 }

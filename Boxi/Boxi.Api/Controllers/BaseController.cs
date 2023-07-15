@@ -4,6 +4,6 @@ namespace Boxi.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
-        
+
     }
 }

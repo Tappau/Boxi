@@ -12,7 +12,7 @@ namespace Boxi.Api.Controllers
     public class BoxController : BaseController
     {
         private readonly IMediator _mediator;
-        
+
         public BoxController(IMediator mediator)
         {
             _mediator = mediator;
@@ -28,7 +28,7 @@ namespace Boxi.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var box = await _mediator.Send(new GetBoxByIdQuery{Id = id});
+            var box = await _mediator.Send(new GetBoxByIdQuery { Id = id });
             if (box == null)
             {
                 return NotFound();
@@ -36,7 +36,7 @@ namespace Boxi.Api.Controllers
 
             return Ok(box);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Post(CreateBoxCommand newBoxCommand)
         {
@@ -46,8 +46,8 @@ namespace Boxi.Api.Controllers
             }
 
             var result = await _mediator.Send(newBoxCommand);
-            
-            return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut]

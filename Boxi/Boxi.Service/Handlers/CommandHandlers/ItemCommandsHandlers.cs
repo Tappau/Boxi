@@ -10,7 +10,7 @@ using MediatR;
 namespace Boxi.Service.Handlers.CommandHandlers
 {
     public class ItemCommandsHandlers : IRequestHandler<CreateItemCommand, EntityAddedDto>
-    ,IRequestHandler<UpdateItemCommand, ItemDto>, IRequestHandler<DeleteItemCommand>
+    , IRequestHandler<UpdateItemCommand, ItemDto>, IRequestHandler<DeleteItemCommand>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -21,7 +21,7 @@ namespace Boxi.Service.Handlers.CommandHandlers
 
         public async Task<EntityAddedDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
-            var newItem = new Item(request.Description, request.Barcode) {BoxId = request.BoxId};
+            var newItem = new Item(request.Description, request.Barcode) { BoxId = request.BoxId };
             await _unitOfWork.ItemRepo.AddAsync(newItem);
             await _unitOfWork.SaveAsync();
             return new EntityAddedDto(newItem.Id);

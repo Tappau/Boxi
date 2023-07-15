@@ -28,14 +28,16 @@ namespace Boxi.Tests.TestHelpers
         protected override List<Box> DefineBoxes()
         {
             var boxData = new List<Box>();
-            for (var i = 1; i <= 3; i++) 
+            for (var i = 1; i <= 3; i++)
             {
                 boxData.Add(new Box($"Box {i}", $"Notes for Box {i}")
-                {Items = new List<Item>()
+                {
+                    Items = new List<Item>()
                 {
                     new Item($"Box {i}, Item {i}"),
-                    new Item($"Box {i}, Item {i + 1}")                        
-                }});
+                    new Item($"Box {i}, Item {i + 1}")
+                }
+                });
             }
 
             boxData.Last().Items.Add(new Item("Item has barcode", "BARCODE"));

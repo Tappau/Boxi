@@ -44,7 +44,7 @@ namespace Boxi.Api.Controllers
             }
 
             var result = await _mediator.Send(createItemCommand);
-            return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut]

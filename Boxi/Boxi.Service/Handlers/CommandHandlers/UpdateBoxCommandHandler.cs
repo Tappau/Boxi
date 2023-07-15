@@ -16,7 +16,7 @@ namespace Boxi.Service.Handlers.CommandHandlers
         {
             _unitofWork = unitofWork;
         }
-        
+
         public async Task<BoxDto> Handle(UpdateBoxCommand request, CancellationToken cancellationToken)
         {
             var boxToUpdate = await _unitofWork.BoxRepo.GetAsync(request.Id);
@@ -27,12 +27,12 @@ namespace Boxi.Service.Handlers.CommandHandlers
 
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                boxToUpdate.BoxName = request.Name;    
+                boxToUpdate.BoxName = request.Name;
             }
 
             if (!string.IsNullOrWhiteSpace(request.Description))
             {
-                boxToUpdate.Notes = request.Description;    
+                boxToUpdate.Notes = request.Description;
             }
 
             _unitofWork.BoxRepo.Update(boxToUpdate);

@@ -47,7 +47,7 @@ namespace Boxi.Api.MiddleWare
                 var readToEnd = new StreamReader(memoryStream).ReadToEnd();
                 var objResult = JsonConvert.DeserializeObject(readToEnd);
                 var result =
-                    ConsistantApiResponse.Create((HttpStatusCode) context.Response.StatusCode, objResult);
+                    ConsistantApiResponse.Create((HttpStatusCode)context.Response.StatusCode, objResult);
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
             }
         }
@@ -58,7 +58,7 @@ namespace Boxi.Api.MiddleWare
         private ConsistantApiResponse(HttpStatusCode responseStatusCode, object objResult, string errorMessage)
         {
             RequestId = Guid.NewGuid().ToString();
-            StatusCode = (int) responseStatusCode;
+            StatusCode = (int)responseStatusCode;
             ErrorMessage = errorMessage;
             Result = objResult;
         }

@@ -8,11 +8,11 @@ namespace Boxi.Core.DTOs
         {
         }
 
-        public ItemDto(int itemId,int boxId, string description) : this(itemId,boxId, description, null)
+        public ItemDto(int itemId, int boxId, string description) : this(itemId, boxId, description, null)
         {
         }
 
-        public ItemDto(int itemId,int boxId, string description, string barcode)
+        public ItemDto(int itemId, int boxId, string description, string barcode)
         {
             Id = itemId;
             BoxId = boxId;

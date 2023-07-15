@@ -32,7 +32,7 @@ namespace Boxi.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Boxi.Api", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Boxi.Api", Version = "v1" }); });
 
             services.AddDbContext<BoxiDataContext>(options =>
             {
