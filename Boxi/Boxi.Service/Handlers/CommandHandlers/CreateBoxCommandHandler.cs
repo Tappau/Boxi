@@ -19,7 +19,7 @@ namespace Boxi.Service.Handlers.CommandHandlers
         public async Task<EntityAddedDto> Handle(CreateBoxCommand request, CancellationToken cancellationToken)
         {
             var newBox = new Box(request.Name, request.Description);
-             await _unitOfWork.BoxRepo.AddAsync(newBox);
+            await _unitOfWork.BoxRepo.AddAsync(newBox);
             await _unitOfWork.SaveAsync();
             return new EntityAddedDto(newBox.Id);
         }

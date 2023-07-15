@@ -10,7 +10,7 @@ using MediatR;
 
 namespace Boxi.Service.Handlers.QueryHandlers
 {
-    public class ItemQueryHandlers : IRequestHandler<GetAllItemsQuery, List<ItemDto>>, 
+    public class ItemQueryHandlers : IRequestHandler<GetAllItemsQuery, List<ItemDto>>,
         IRequestHandler<GetItemByIdQuery, ItemDto>
     {
         private readonly IUnitOfWork _unitOfWork;

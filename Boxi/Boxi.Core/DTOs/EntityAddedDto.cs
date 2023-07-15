@@ -8,7 +8,7 @@ namespace Boxi.Core.DTOs
         {
             Id = id;
         }
-        
+
         [JsonPropertyName("id")]
         public int Id { get; init; }
     }

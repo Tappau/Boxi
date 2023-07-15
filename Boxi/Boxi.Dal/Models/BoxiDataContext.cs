@@ -36,7 +36,7 @@ namespace Boxi.Dal.Models
 
             OnModelCreatingPartial(modelBuilder);
         }
-        
+
         public override int SaveChanges()
         {
             SetCreatedModifiedOnValues();
@@ -60,11 +60,11 @@ namespace Boxi.Dal.Models
                 switch (entityEntry.State)
                 {
                     case EntityState.Added:
-                        ((BaseEntity) entityEntry.Entity).CreatedOn = DateTime.UtcNow;
-                        ((BaseEntity) entityEntry.Entity).ModifiedOn = null;
+                        ((BaseEntity)entityEntry.Entity).CreatedOn = DateTime.UtcNow;
+                        ((BaseEntity)entityEntry.Entity).ModifiedOn = null;
                         break;
                     case EntityState.Modified:
-                        ((BaseEntity) entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
+                        ((BaseEntity)entityEntry.Entity).ModifiedOn = DateTime.UtcNow;
                         break;
                 }
             }

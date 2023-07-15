@@ -8,12 +8,12 @@ namespace Boxi.Core.Commands
     {
         public CreateItemCommand()
         {
-            
+
         }
 
         public CreateItemCommand(int boxId, string description) : this(boxId, description, null)
         {
-            
+
         }
 
         public CreateItemCommand(int boxId, string description, string barcode)

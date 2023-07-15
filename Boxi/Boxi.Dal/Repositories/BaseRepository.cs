@@ -73,7 +73,7 @@ namespace Boxi.Dal.Repositories
 
         private T Get(Expression<Func<T, bool>> predicate)
         {
-            return (T) Context.Set<T>().FirstOrDefault(predicate);
+            return (T)Context.Set<T>().FirstOrDefault(predicate);
         }
     }
 }

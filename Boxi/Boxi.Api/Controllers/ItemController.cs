@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Boxi.Core.Commands;
 using Boxi.Core.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Boxi.Api.Controllers
 {
@@ -44,7 +44,7 @@ namespace Boxi.Api.Controllers
             }
 
             var result = await _mediator.Send(createItemCommand);
-            return CreatedAtAction(nameof(GetById), new {id = result.Id}, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPut]
