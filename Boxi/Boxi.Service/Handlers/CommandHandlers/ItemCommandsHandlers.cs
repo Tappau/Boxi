@@ -45,11 +45,10 @@ namespace Boxi.Service.Handlers.CommandHandlers
             return new ItemDto(itemToUpdate.Id, itemToUpdate.BoxId, itemToUpdate.Description);
         }
 
-        public async Task<Unit> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
             _unitOfWork.ItemRepo.Delete(request.Id);
             await _unitOfWork.SaveAsync();
-            return Unit.Value;
         }
     }
 }

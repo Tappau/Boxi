@@ -48,7 +48,7 @@ namespace Boxi.Api
             //services.AddTransient<IDbConnection>((sp) =>
             //    new SqlConnection(Configuration.GetConnectionString("InventoryDatabase")));
 
-            services.AddMediatR(typeof(CreateBoxCommand), typeof(CreateBoxCommandHandler));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Startup>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

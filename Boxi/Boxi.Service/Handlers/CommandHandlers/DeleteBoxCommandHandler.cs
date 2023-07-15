@@ -16,11 +16,10 @@ namespace Boxi.Service.Handlers.CommandHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Unit> Handle(DeleteBoxCommand request, CancellationToken cancellationToken)
+        public async Task Handle(DeleteBoxCommand request, CancellationToken cancellationToken)
         {
             _unitOfWork.BoxRepo.Delete(request.Id);
             await _unitOfWork.SaveAsync();
-            return Unit.Value;
         }
     }
 }
